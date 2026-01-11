@@ -1,0 +1,46 @@
+# =====================
+# OS / Editor
+# =====================
+.DS_Store
+.vscode/
+.idea/
+
+# =====================
+# Environment
+# =====================
+.env
+.env.*
+!.env.example
+
+# =====================
+# Go
+# =====================
+apps/api/bin/
+apps/api/tmp/
+apps/api/docs/
+apps/api/*.log
+
+# =====================
+# Node / Frontend
+# =====================
+node_modules/
+apps/web-*/node_modules/
+apps/web-*/.next/
+apps/web-*/dist/
+apps/web-*/build/
+
+# =====================
+# Docker
+# =====================
+docker/postgres_data/
+**/docker-data/
+
+# =====================
+# Logs
+# =====================
+*.log
+
+# =====================
+# Misc
+# =====================
+coverage/
