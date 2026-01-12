@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: knowledge_hub_postgres
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    environment:
+      POSTGRES_USER: kh_user
+      POSTGRES_PASSWORD: kh_password
+      POSTGRES_DB: knowledge_hub
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
