@@ -3,15 +3,14 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/PrinceM13/knowledge-hub-api/internal/health"
 )
 
 func main() {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
-	})
+	mux.HandleFunc("/health", health.Handler)
 
 	server := &http.Server{Addr: ":8080", Handler: mux}
 
