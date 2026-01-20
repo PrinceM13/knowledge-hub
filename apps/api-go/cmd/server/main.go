@@ -1,7 +1,13 @@
 package main
 
 import (
+	"context"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/PrinceM13/knowledge-hub-api/internal/config"
 	"github.com/PrinceM13/knowledge-hub-api/internal/server"
@@ -10,12 +16,36 @@ import (
 func main() {
 	cfg := config.Load()
 
-	r := server.New()
+	engine := server.New()
 
 	addr := ":" + cfg.Port
 	log.Printf("🚀 API server running on port %s (env=%s)\n", addr, cfg.AppEnv)
 
-	if err := r.Run(addr); err != nil {
-		log.Fatalf("could not start server: %s\n", err)
+	httpServer := &http.Server{
+		Addr:    addr,
+		Handler: engine,
 	}
+
+	// run server in a goroutine
+	go func() {
+		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen error: %s\n", err)
+		}
+	}()
+
+	// wait for shutdown signal
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	log.Println("🛑 Shutting down server...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := httpServer.Shutdown(ctx); err != nil {
+		log.Fatalf("server forced to shutdown: %s\n", err)
+	}
+
+	log.Println("✅ Server exited gracefully")
 }
