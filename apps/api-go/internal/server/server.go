@@ -13,7 +13,7 @@ func New() *gin.Engine {
 	r.Use(gin.Recovery())
 
 	// routes
-	r.GET("/health", health.Handler)
+	health.Register(r)
 
 	return r
 }
