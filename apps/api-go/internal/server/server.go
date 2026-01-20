@@ -12,8 +12,12 @@ func New() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
+	// versioned API group
+	api := r.Group("/api")
+	v1 := api.Group("/v1")
+
 	// routes
-	health.Register(r)
+	health.Register(v1)
 
 	return r
 }
