@@ -10,11 +10,16 @@ import (
 	"time"
 
 	"github.com/PrinceM13/knowledge-hub-api/internal/config"
+	"github.com/PrinceM13/knowledge-hub-api/internal/db"
 	"github.com/PrinceM13/knowledge-hub-api/internal/server"
 )
 
 func main() {
 	cfg := config.Load()
+
+	if err := db.Connect(cfg); err != nil {
+		log.Fatalf("failed to connect to database: %v\n", err)
+	}
 
 	engine := server.New()
 
@@ -45,6 +50,10 @@ func main() {
 
 	if err := httpServer.Shutdown(ctx); err != nil {
 		log.Fatalf("server forced to shutdown: %s\n", err)
+	}
+
+	if err := db.Close(); err != nil {
+		log.Printf("error closing database: %v\n", err)
 	}
 
 	log.Println("✅ Server exited gracefully")
