@@ -45,3 +45,6 @@ migrate-down:
 
 migrate-force:
 	migrate -path $(MIGRATIONS_PATH) -database "$(MIGRATE_DB)" force $(version)
+
+migrate-create:
+	migrate create -ext sql -dir $(MIGRATIONS_PATH) $(name)

@@ -23,9 +23,7 @@ func Connect(cfg *config.Config) error {
 	)
 
 	var err error
-
 	DB, err = sql.Open("postgres", dsn)
-
 	if err != nil {
 		return err
 	}
@@ -44,7 +42,7 @@ func Connect(cfg *config.Config) error {
 
 func Close() error {
 	if DB != nil {
-		log.Println("🛑 Closing database connection...")
+		log.Println("🔌 Closing database connection...")
 		return DB.Close()
 	}
 	return nil
