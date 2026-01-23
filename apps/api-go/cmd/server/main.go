@@ -11,6 +11,7 @@ import (
 
 	"github.com/PrinceM13/knowledge-hub-api/internal/config"
 	"github.com/PrinceM13/knowledge-hub-api/internal/db"
+	"github.com/PrinceM13/knowledge-hub-api/internal/db/user"
 	"github.com/PrinceM13/knowledge-hub-api/internal/server"
 )
 
@@ -21,7 +22,13 @@ func main() {
 		log.Fatalf("failed to connect to database: %v\n", err)
 	}
 
-	engine := server.New()
+	userRepo := user.NewPostgresRepository(db.DB)
+
+	app := &server.App{
+		UserRepo: userRepo,
+	}
+
+	engine := server.New(app)
 
 	addr := ":" + cfg.Port
 	log.Printf("🚀 API server running on port %s (env=%s)\n", addr, cfg.AppEnv)

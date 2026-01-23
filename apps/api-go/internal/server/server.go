@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func New() *gin.Engine {
+func New(app *App) *gin.Engine {
 	r := gin.New()
 
 	// middleware
