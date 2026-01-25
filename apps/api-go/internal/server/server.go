@@ -1,23 +1,22 @@
 package server
 
 import (
+	"github.com/PrinceM13/knowledge-hub-api/internal/app"
 	"github.com/PrinceM13/knowledge-hub-api/internal/health"
+	v1 "github.com/PrinceM13/knowledge-hub-api/internal/http/v1"
 	"github.com/gin-gonic/gin"
 )
 
-func New(app *App) *gin.Engine {
+func New(app *app.App) *gin.Engine {
 	r := gin.New()
 
 	// middleware
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	// versioned API group
-	api := r.Group("/api")
-	v1 := api.Group("/v1")
-
 	// routes
-	health.Register(v1)
+	health.Register(r)
+	v1.Register(r, app)
 
 	return r
 }

@@ -9,10 +9,12 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/PrinceM13/knowledge-hub-api/internal/app"
 	"github.com/PrinceM13/knowledge-hub-api/internal/config"
 	"github.com/PrinceM13/knowledge-hub-api/internal/db"
-	"github.com/PrinceM13/knowledge-hub-api/internal/db/user"
+	userdb "github.com/PrinceM13/knowledge-hub-api/internal/db/user"
 	"github.com/PrinceM13/knowledge-hub-api/internal/server"
+	"github.com/PrinceM13/knowledge-hub-api/internal/user"
 )
 
 func main() {
@@ -22,14 +24,19 @@ func main() {
 		log.Fatalf("failed to connect to database: %v\n", err)
 	}
 
-	userRepo := user.NewPostgresRepository(db.DB)
+	// repositories
+	userRepo := userdb.NewPostgresRepository(db.DB)
 
-	app := &server.App{
-		UserRepo: userRepo,
-	}
+	// services
+	userService := user.NewService(userRepo)
 
+	// application
+	app := app.New(userService)
+
+	// http server
 	engine := server.New(app)
 
+	// start server
 	addr := ":" + cfg.Port
 	log.Printf("🚀 API server running on port %s (env=%s)\n", addr, cfg.AppEnv)
 
