@@ -19,10 +19,12 @@ func (e *AppError) Error() string {
 	return e.Message
 }
 
+// convert to underlying error
 func (e *AppError) Unwrap() error {
 	return e.Err
 }
 
+// create a new fresh AppError
 func New(code, message string, httpStatus int) *AppError {
 	return &AppError{
 		Code:       code,
@@ -31,6 +33,7 @@ func New(code, message string, httpStatus int) *AppError {
 	}
 }
 
+// convert an existing error into an AppError
 func Wrap(err error, code, message string, httpStatus int) *AppError {
 	return &AppError{
 		Code:       code,
@@ -40,6 +43,7 @@ func Wrap(err error, code, message string, httpStatus int) *AppError {
 	}
 }
 
+// inspect an error and see if it's an AppError
 func AsAppError(err error) (*AppError, bool) {
 	var appErr *AppError
 	if errors.As(err, &appErr) {

@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/PrinceM13/knowledge-hub-api/internal/app"
+	"github.com/PrinceM13/knowledge-hub-api/internal/errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,16 +21,16 @@ func registerUser(a *app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req CreateUserRequest
 
-		// validate input
+		// bind JSON body to request struct
 		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request payload"})
+			c.Error(errors.InvalidRequest(err))
 			return
 		}
 
 		u, err := a.RegisterUser(c.Request.Context(), req.Email, req.Name)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create user"})
+			c.Error(err)
 			return
 		}
 
@@ -38,21 +39,28 @@ func registerUser(a *app.App) gin.HandlerFunc {
 }
 
 func listUsers(a *app.App) gin.HandlerFunc {
-	{
-		return func(c *gin.Context) {
-			// parse query parameters
-			limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
-			offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
-
-			users, err := a.ListUsers(c.Request.Context(), limit, offset)
-
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch users"})
-				return
-			}
-
-			c.JSON(http.StatusOK, toUserListItems(users))
+	return func(c *gin.Context) {
+		// parse query parameters with validation
+		limit, err := strconv.Atoi(c.DefaultQuery("limit", "20"))
+		if err != nil {
+			c.Error(errors.InvalidQueryParam(err, "limit"))
+			return
 		}
+
+		offset, err := strconv.Atoi(c.DefaultQuery("offset", "0"))
+		if err != nil {
+			c.Error(errors.InvalidQueryParam(err, "offset"))
+			return
+		}
+
+		users, err := a.ListUsers(c.Request.Context(), limit, offset)
+
+		if err != nil {
+			c.Error(err)
+			return
+		}
+
+		c.JSON(http.StatusOK, toUserListItems(users))
 	}
 }
 
@@ -60,16 +68,15 @@ func getUserByID(a *app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// parse user ID from path parameter
 		userID, err := strconv.ParseInt(c.Param("id"), 10, 64)
-
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user ID"})
+			c.Error(errors.InvalidPathParam(err, "id"))
 			return
 		}
 
 		u, err := a.GetUserByID(c.Request.Context(), userID)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch user"})
+			c.Error(err)
 			return
 		}
 

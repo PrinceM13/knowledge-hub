@@ -4,6 +4,7 @@ import (
 	"github.com/PrinceM13/knowledge-hub-api/internal/app"
 	"github.com/PrinceM13/knowledge-hub-api/internal/health"
 	v1 "github.com/PrinceM13/knowledge-hub-api/internal/http/v1"
+	"github.com/PrinceM13/knowledge-hub-api/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,6 +14,7 @@ func New(app *app.App) *gin.Engine {
 	// middleware
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
+	r.Use(middleware.ErrorHandler())
 
 	// routes
 	health.Register(r)
