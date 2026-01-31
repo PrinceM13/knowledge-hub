@@ -18,7 +18,6 @@ func TestCreate(t *testing.T) {
 		userName      string
 		setupMock     func(*MockRepository)
 		expectedError error
-		expectUser    bool
 	}{
 		{
 			name:     "success - valid user creation",
@@ -30,7 +29,6 @@ func TestCreate(t *testing.T) {
 				})).Return(nil).Once()
 			},
 			expectedError: nil,
-			expectUser:    true,
 		},
 		{
 			name:          "error - invalid email format",
@@ -38,7 +36,6 @@ func TestCreate(t *testing.T) {
 			userName:      "John Doe",
 			setupMock:     func(m *MockRepository) {}, // repo should NOT be called, validation fails first
 			expectedError: ErrInvalidEmail,
-			expectUser:    false,
 		},
 		{
 			name:          "error - name too short",
@@ -46,7 +43,6 @@ func TestCreate(t *testing.T) {
 			userName:      "J",
 			setupMock:     func(m *MockRepository) {}, // repo should NOT be called, validation fails first
 			expectedError: ErrInvalidName,
-			expectUser:    false,
 		},
 		{
 			name:          "error - name too long",
@@ -54,7 +50,6 @@ func TestCreate(t *testing.T) {
 			userName:      "This is a very long name that exceeds the maximum allowed length of one hundred characters for testing",
 			setupMock:     func(m *MockRepository) {}, // repo should NOT be called, validation fails first
 			expectedError: ErrInvalidName,
-			expectUser:    false,
 		},
 		{
 			name:     "error - repository failure",
@@ -64,7 +59,6 @@ func TestCreate(t *testing.T) {
 				m.On("Create", mock.Anything, mock.Anything).Return(errors.New("database error")).Once()
 			},
 			expectedError: errors.New("Failed to create user"),
-			expectUser:    false,
 		},
 	}
 
@@ -102,7 +96,6 @@ func TestFindByID(t *testing.T) {
 		userID        int64
 		setupMock     func(*MockRepository)
 		expectedError error
-		expectUser    bool
 	}{
 		{
 			name:   "success - user found",
@@ -116,7 +109,6 @@ func TestFindByID(t *testing.T) {
 				}, nil).Once()
 			},
 			expectedError: nil,
-			expectUser:    true,
 		},
 		{
 			name:   "error - user not found",
@@ -125,7 +117,6 @@ func TestFindByID(t *testing.T) {
 				m.On("FindByID", mock.Anything, int64(999)).Return(nil, sql.ErrNoRows).Once()
 			},
 			expectedError: errors.New("not found"),
-			expectUser:    false,
 		},
 		{
 			name:   "error - repository failure",
@@ -134,7 +125,6 @@ func TestFindByID(t *testing.T) {
 				m.On("FindByID", mock.Anything, int64(1)).Return(nil, errors.New("database error")).Once()
 			},
 			expectedError: errors.New("Failed to fetch user"),
-			expectUser:    false,
 		},
 	}
 
@@ -244,7 +234,6 @@ func TestRegisterUser(t *testing.T) {
 		userName      string
 		setupMock     func(*MockRepository)
 		expectedError error
-		expectUser    bool
 	}{
 		{
 			name:     "success - new user registered",
@@ -259,7 +248,6 @@ func TestRegisterUser(t *testing.T) {
 				})).Return(nil).Once()
 			},
 			expectedError: nil,
-			expectUser:    true,
 		},
 		{
 			name:     "error - duplicate email",
@@ -274,7 +262,6 @@ func TestRegisterUser(t *testing.T) {
 				}, nil).Once()
 			},
 			expectedError: ErrDuplicateEmail,
-			expectUser:    false,
 		},
 		{
 			name:     "error - checking existing user fails",
@@ -284,7 +271,6 @@ func TestRegisterUser(t *testing.T) {
 				m.On("FindByEmail", mock.Anything, "test@example.com").Return(nil, errors.New("database error")).Once()
 			},
 			expectedError: errors.New("Failed to check existing user"),
-			expectUser:    false,
 		},
 		{
 			name:     "error - create user fails",
@@ -295,7 +281,6 @@ func TestRegisterUser(t *testing.T) {
 				m.On("Create", mock.Anything, mock.Anything).Return(errors.New("database error")).Once()
 			},
 			expectedError: errors.New("Failed to create user"),
-			expectUser:    false,
 		},
 	}
 
