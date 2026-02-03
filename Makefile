@@ -10,7 +10,8 @@ MIGRATIONS_PATH=apps/api-go/migrations
 
 .PHONY: \
 	db-up db-down db-restart db-logs db-psql \
-	migrate-up migrate-down migrate-force
+	migrate-up migrate-down migrate-force \
+	test test-unit test-integration test-unit-verbose test-coverage
 
 # =========================
 # Database (Docker)
@@ -48,3 +49,28 @@ migrate-force:
 
 migrate-create:
 	migrate create -ext sql -dir $(MIGRATIONS_PATH) $(name)
+
+# =========================
+# Testing
+# =========================
+
+test:
+	cd apps/api-go && go test ./...
+
+test-unit:
+	cd apps/api-go && go test -short ./...
+
+test-integration:
+	cd apps/api-go && go test -run Integration ./...
+
+test-unit-verbose:
+	cd apps/api-go && go test -v -short ./...
+
+test-integration-verbose:
+	cd apps/api-go && go test -v -run Integration ./...
+
+test-coverage:
+	cd apps/api-go && go test -cover ./... && \
+	go test -coverprofile=coverage.out ./... && \
+	go tool cover -html=coverage.out -o coverage.html
+	@echo "Coverage report generated: apps/api-go/coverage.html"
