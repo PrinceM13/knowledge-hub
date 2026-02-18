@@ -25,11 +25,20 @@ This project is designed to:
 
 ## Tech Stack (Current)
 
-### Database
+### Backend
 
+- **Go** (API server with clean architecture)
 - **PostgreSQL** (Docker-based, local development)
 
-Postgres is the only required data store at the moment.
+### Frontend (Planned)
+
+Starting with **Next.js**, then experimenting with:
+
+- **Vue.js** – alternative web framework
+- **Angular** – enterprise-grade framework
+- **React Native** – mobile app for iOS/Android
+
+The same backend API will serve all frontend implementations.
 
 ### Planned / Future
 
@@ -66,7 +75,6 @@ PostgreSQL listens on port `5432` **inside the Docker container**.
 Docker exposes it to the host machine on port `5433`:
 
 - Use **port `5433`** when connecting from:
-
   - TablePlus
   - `psql` on your local machine
   - Backend services running outside Docker
