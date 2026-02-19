@@ -1,22 +1,17 @@
+import type { UserListItem } from "@repo/api-contract/types";
+import { api } from "@/lib/api";
+
 export default async function UsersExample() {
-  // Example: Fetch users from API
-  // Uncomment when your Go API is running
-  /*
-  import { api } from "@/lib/api";
-  
-  const users = await api.users.listUsers({ limit: 10 });
-  
-  return (
-    <div>
-      <h1>Users</h1>
-      <ul>
-        {users.map((user) => (
-          <li key={user.email}>{user.name} - {user.email}</li>
-        ))}
-      </ul>
-    </div>
-  );
-  */
+  // Fetch real users from Go API
+  let users: UserListItem[] = [];
+  let error: string | null = null;
+
+  try {
+    users = await api.users.listUsers({ limit: 10 });
+  } catch (err) {
+    error = err instanceof Error ? err.message : "Failed to fetch users";
+    console.error("Failed to fetch users:", err);
+  }
 
   return (
     <div className="min-h-screen bg-white p-8">
@@ -32,26 +27,65 @@ export default async function UsersExample() {
           package.
         </p>
 
+        {/* Users List Example */}
+        <div className="mb-6 rounded-lg border-2 border-green-300 bg-green-50 p-6">
+          <h2 className="mb-4 text-2xl font-bold text-gray-900">
+            📋 Users List {error && "⚠️"}
+          </h2>
+          <p className="mb-3 text-sm text-gray-600">
+            {error
+              ? `Error: ${error}`
+              : `Showing ${users.length} user(s) from the Go API`}
+          </p>
+          {users.length > 0 ? (
+            <div className="space-y-2">
+              {users.map((user) => (
+                <div
+                  key={user.email}
+                  className="rounded border border-green-200 bg-white p-3"
+                >
+                  <div className="font-semibold text-gray-900">{user.name}</div>
+                  <div className="text-sm text-gray-600">{user.email}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            !error && (
+              <div className="rounded bg-yellow-50 p-4 text-gray-700">
+                No users found. Try creating one using the API!
+              </div>
+            )
+          )}
+        </div>
+
         <div className="mb-6 rounded-lg border-2 border-blue-300 bg-blue-100 p-6">
           <h2 className="mb-3 text-xl font-bold text-gray-900">
-            To use the API:
+            ✅ Connected to Real API!
           </h2>
-          <ol className="list-inside list-decimal space-y-2 text-base text-gray-800">
-            <li>Start your Go API server</li>
-            <li>Uncomment the code above</li>
-            <li>Refresh this page</li>
-          </ol>
+          <p className="mb-2 text-base text-gray-800">
+            This page is now fetching data from your Go API at{" "}
+            <code className="rounded bg-white px-1 text-sm">
+              http://localhost:8080/api/v1
+            </code>
+          </p>
+          <p className="text-sm text-gray-700">
+            The data you see above is coming from your PostgreSQL database! 🎉
+          </p>
         </div>
 
         <div className="rounded-lg border-2 border-gray-300 bg-gray-100 p-6">
           <h2 className="mb-3 text-xl font-bold text-gray-900">
-            Type-safe API calls:
+            💻 Type-safe API calls:
           </h2>
           <pre className="overflow-x-auto rounded border border-gray-300 bg-white p-4 text-sm">
             <code className="text-gray-900">{`import { api } from '@/lib/api';
+import type { UserListItem } from '@repo/api-contract/types';
 
-// List users
-const users = await api.users.listUsers({ limit: 10 });
+// List users (with type safety!)
+const users: UserListItem[] = await api.users.listUsers({ 
+  limit: 10,
+  offset: 0 
+});
 
 // Create user
 const newUser = await api.users.createUser({
