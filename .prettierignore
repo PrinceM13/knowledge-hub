@@ -1,0 +1,25 @@
+# Prettier ignore patterns
+node_modules
+.next
+dist
+build
+coverage
+.pnpm-store
+
+# Build outputs
+*.tsbuildinfo
+apps/*/dist
+apps/*/.next
+apps/*/build
+
+# Go files
+apps/api-go
+*.go
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.example

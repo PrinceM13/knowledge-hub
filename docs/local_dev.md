@@ -35,6 +35,7 @@ localhost:5433  ──▶  Docker Container:5432 (Postgres)
 ### Connecting From Your Local Machine
 
 Use these settings when connecting from:
+
 - TablePlus
 - `psql` on your Mac
 - Backend services running **outside Docker**
@@ -81,21 +82,25 @@ If a local Postgres is running, always use **5433** for Docker Postgres.
 ## Useful Commands
 
 Start services:
+
 ```bash
 docker compose up -d
 ```
 
 Stop services:
+
 ```bash
 docker compose down
 ```
 
 Connect to Postgres (host):
+
 ```bash
 psql -h localhost -p 5433 -U kh_user knowledge_hub
 ```
 
 Connect to Postgres (inside container):
+
 ```bash
 docker exec -it knowledge_hub_postgres psql -U kh_user -d knowledge_hub
 ```
@@ -106,7 +111,6 @@ docker exec -it knowledge_hub_postgres psql -U kh_user -d knowledge_hub
 
 - Frontend apps **never connect directly to the database**
 - Frontend → Backend API → Database
-- Port confusion is normal — always ask *"Where is my app running?"*
+- Port confusion is normal — always ask _"Where is my app running?"_
 
 This document will grow as more services are added.
-

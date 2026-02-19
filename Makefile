@@ -11,7 +11,8 @@ MIGRATIONS_PATH=apps/api-go/migrations
 .PHONY: \
 	db-up db-down db-restart db-logs db-psql \
 	migrate-up migrate-down migrate-force \
-	test test-unit test-integration test-unit-verbose test-coverage
+	test test-unit test-integration test-unit-verbose test-coverage \
+	install dev dev-next build build-next lint lint-next clean
 
 # =========================
 # Database (Docker)
@@ -74,3 +75,32 @@ test-coverage:
 	go test -coverprofile=coverage.out ./... && \
 	go tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report generated: apps/api-go/coverage.html"
+
+# =========================
+# Node / pnpm
+# =========================
+
+install:
+	pnpm install
+
+# =========================
+# Next.js
+# =========================
+
+dev:
+	pnpm --filter web-next dev
+
+dev-next:
+	pnpm --filter web-next dev
+
+build-next:
+	pnpm --filter web-next build
+
+lint-next:
+	pnpm --filter web-next lint
+
+clean:
+	rm -rf node_modules
+	rm -rf apps/web-next/node_modules
+	rm -rf apps/web-next/.next
+	rm -rf pnpm-lock.yaml

@@ -1,0 +1,31 @@
+{
+  "name": "knowledge-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A monorepo for a personal knowledge management system",
+  "scripts": {
+    "dev": "pnpm --filter web-next dev",
+    "dev:next": "pnpm --filter web-next dev",
+    "build": "pnpm --filter web-next build",
+    "build:next": "pnpm --filter web-next build",
+    "lint": "pnpm --filter web-next lint",
+    "lint:next": "pnpm --filter web-next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "keywords": [
+    "monorepo",
+    "knowledge-management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.3",
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.11"
+  }
+}
