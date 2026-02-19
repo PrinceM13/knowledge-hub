@@ -88,3 +88,47 @@ Docker exposes it to the host machine on port `5433`:
 ```bash
 docker compose up -d
 ```
+
+### Project Structure
+
+```
+knowledge-hub/
+├── apps/
+│   ├── api-go/                 # Go API server (Gin + Clean Architecture)
+│   │   ├── cmd/
+│   │   │   └── server/         # Main entry point
+│   │   ├── internal/           # Business logic, handlers, repos
+│   │   │   ├── app/            # Application layer
+│   │   │   ├── config/         # Configuration
+│   │   │   ├── db/             # Database repositories
+│   │   │   ├── errors/         # Error handling
+│   │   │   ├── health/         # Health check endpoints
+│   │   │   ├── http/           # HTTP handlers & routing
+│   │   │   ├── middleware/     # HTTP middleware
+│   │   │   ├── server/         # HTTP server setup
+│   │   │   ├── user/           # User domain logic
+│   │   │   └── testutil/       # Test utilities
+│   │   ├── migrations/         # SQL migrations
+│   │   ├── go.mod
+│   │   └── go.sum
+│   │
+│   ├── web-next/               # Next.js (planned)
+│   ├── web-vue/                # Vue 3 (planned)
+│   ├── web-svelte/             # SvelteKit (planned)
+│   ├── web-angular/            # Angular (planned)
+│   └── mobile-rn/              # React Native (planned)
+│
+├── packages/                   # (future)
+│   ├── api-contract/           # OpenAPI spec / shared types
+│   └── ui-guidelines/          # Shared design system
+│
+├── docs/
+│   └── local_dev.md            # Local development guide
+│
+├── docker/
+│   └── docker-compose.yml      # PostgreSQL container
+│
+├── Makefile                    # Development commands
+├── .gitignore
+└── README.md
+```
